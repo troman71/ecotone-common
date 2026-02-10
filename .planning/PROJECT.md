@@ -8,6 +8,14 @@ A shared pip-installable Python package providing authentication utilities (emai
 
 Every Ecotone app uses identical, well-tested auth primitives — no drift, no duplication, one place to fix bugs or upgrade security.
 
+## Current State
+
+Shipped v0.1.0 with 593 LOC Python.
+Tech stack: bcrypt, itsdangerous, ruff, pytest, GitHub Actions.
+4 modules: passwords, tokens, email, consent.
+32 passing tests, CI on Python 3.11/3.12/3.13.
+In production use by ecotone-impact.
+
 ## Requirements
 
 ### Validated
@@ -23,15 +31,16 @@ Every Ecotone app uses identical, well-tested auth primitives — no drift, no d
 - ✓ EULA version lookup helper — existing
 - ✓ 32 passing tests across all modules — existing
 - ✓ Installed and working in ecotone-impact — existing
+- ✓ GitHub Actions CI with pytest + ruff linting — v0.1
+- ✓ v0.1.0 annotated git tag for release tracking — v0.1
+- ✓ README.md with install instructions and per-module API examples — v0.1
+- ✓ CHANGELOG.md tracking changes per version — v0.1
 
 ### Active
 
 - [ ] Harden email backends (error handling, `__repr__` masking)
 - [ ] Add SMTP/SendGrid error case tests
 - [ ] Add `__repr__` to backends to prevent credential leaks in logs
-- [ ] Add CI (GitHub Actions: lint + test on push)
-- [ ] Document public API (docstrings are there, but no README usage examples)
-- [ ] Tag v0.1.0 release
 
 ### Out of Scope
 
@@ -62,8 +71,11 @@ Every Ecotone app uses identical, well-tested auth primitives — no drift, no d
 |----------|-----------|---------|
 | pip-installable package over git submodule or monorepo | Cleanest dependency management, standard Python tooling | ✓ Good |
 | No Flask dependency | Keeps package portable across any Python web framework | ✓ Good |
-| Editable local install for dev, git clone for CI | Simple, no PyPI infrastructure needed for 3 apps | — Pending |
+| Editable local install for dev, git clone for CI | Simple, no PyPI infrastructure needed for 3 apps | ✓ Good |
 | SmtpBackend raises exceptions (caller handles) | Matches Impact's existing try/except pattern in email_service.py | — Pending |
+| Ruff over Flake8 for linting | 50-150x faster, single tool for lint + format | ✓ Good |
+| Annotated git tags for releases | Preserves author, date, message metadata for production tracking | ✓ Good |
+| __all__ export list in __init__.py | Proper public API, fixes F401 violations, helps IDE autocomplete | ✓ Good |
 
 ---
-*Last updated: 2026-02-10 after initialization*
+*Last updated: 2026-02-10 after v0.1 milestone*

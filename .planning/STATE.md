@@ -1,30 +1,33 @@
 # State: ecotone-common
 
 **Last Updated:** 2026-02-10
-**Current Phase:** MILESTONE COMPLETE
-**Status:** All 2 phases complete, all 5 requirements satisfied
+**Current Phase:** Milestone archived — ready for next milestone
+**Status:** v0.1 shipped and archived
 
 ---
 
 ## Project Reference
 
-**Core Value:** Every Ecotone app uses identical, well-tested auth primitives — no drift, no duplication, one place to fix bugs.
+See: .planning/PROJECT.md (updated 2026-02-10)
 
-**Current Focus:** Milestone complete. Package has CI/CD, documentation, 32 passing tests, and is in production use by ecotone-impact.
+**Core value:** Every Ecotone app uses identical, well-tested auth primitives — no drift, no duplication.
+**Current focus:** Planning next milestone (v0.2 Robustness)
 
 ---
 
 ## Current Position
 
-**Phase:** All phases complete
-**Status:** Milestone complete
+**Phase:** No active phases
+**Status:** Ready to plan next milestone
+**Last activity:** 2026-02-10 — v0.1 milestone complete
 
 **Progress:**
 ```
-[████████████████████] 100% (5/5 requirements complete)
+v0.1 ████████████████████ SHIPPED
+v0.2 ░░░░░░░░░░░░░░░░░░░░ Not started
 ```
 
-**Next Action:** `/gsd:complete-milestone` or `/gsd:new-milestone` for v0.2.0
+**Next Action:** `/gsd:new-milestone` for v0.2 Robustness
 
 ---
 
@@ -32,12 +35,11 @@
 
 | Metric | Value | Updated |
 |--------|-------|---------|
-| Phases Complete | 2/2 | 2026-02-10 |
-| Requirements Complete | 5/5 (CICD-01, CICD-02, CICD-03, DOCS-01, DOCS-02) | 2026-02-10 |
-| Plans Executed | 4 | 2026-02-10 |
-| Total Commits | 4 | 2026-02-10 |
+| Milestones Shipped | 1 (v0.1) | 2026-02-10 |
+| Total Phases Complete | 2 | 2026-02-10 |
+| Total Requirements Shipped | 5 | 2026-02-10 |
+| Total Plans Executed | 4 | 2026-02-10 |
 | Git Tags | 1 (v0.1.0) | 2026-02-10 |
-| Blockers | 0 | — |
 
 ---
 
@@ -45,17 +47,11 @@
 
 ### Key Decisions
 
-| Decision | Date | Rationale |
-|----------|------|-----------|
-| 2-phase roadmap (CI/CD then Docs) | 2026-02-10 | Small package with 5 requirements, "quick" depth, natural grouping |
-| Added __all__ export list to __init__.py | 2026-02-10 | Fixed F401 linting violations for proper public API symbol export |
-| Auto-formatted codebase with ruff | 2026-02-10 | Required for CI format checks to pass, safe deterministic operation |
-| Used annotated git tag for v0.1.0 | 2026-02-10 | Annotated tags preserve author, date, message metadata for production tracking |
-| Wrote Phase 2 docs directly (no executor agents) | 2026-02-10 | GSD executor overhead unnecessary for simple documentation tasks |
+See .planning/PROJECT.md Key Decisions table (7 decisions, 5 confirmed Good, 2 Pending).
 
 ### Active Todos
 
-None — milestone complete
+None
 
 ### Blockers
 
@@ -63,34 +59,24 @@ None
 
 ### Recent Learnings
 
-- Ruff configuration in pyproject.toml requires [tool.ruff] and [tool.ruff.lint] sections
-- pytest configuration requires pythonpath = ["src"] for src-layout packages
-- GitHub Actions matrix testing should use fail-fast: false to see all Python version failures
-- __all__ list in __init__.py is critical for public API packages to avoid F401 violations
-- Annotated git tags (git tag -a) store metadata; lightweight tags (git tag) only store commit reference
 - GSD executor agents are overkill for simple file creation tasks — write directly when overhead exceeds value
+- Ruff configuration in pyproject.toml requires [tool.ruff] and [tool.ruff.lint] sections
+- pytest with pythonpath = ["src"] for src-layout packages
+- __all__ in __init__.py critical for public API packages
 
 ---
 
 ## Session Continuity
 
-**Last Session:** 2026-02-10 (Phase 02 execution)
+**Last Session:** 2026-02-10 (v0.1 milestone completion)
 
 **What Happened:**
-- Wrote README.md with install instructions and per-module API examples (DOCS-01)
-- Wrote CHANGELOG.md with v0.1.0 release entry (DOCS-02)
-- All 5 v1 requirements satisfied
-- Milestone complete
+- Archived v0.1 milestone (roadmap, requirements, MILESTONES.md)
+- Evolved PROJECT.md (shipped requirements -> Validated, added Current State)
+- Tagged v0.1.0 (already existed from Phase 1)
 
 **What's Next:**
-- `/gsd:complete-milestone` to archive
-- Or `/gsd:new-milestone` for v0.2.0 (robustness requirements)
-
-**Context for Next Agent:**
-- Package is complete for v0.1.0 scope
-- 32 passing tests, CI/CD on GitHub Actions, full documentation
-- In production use by ecotone-impact
-- v2 requirements (RBST-01/02/03) defined but not yet planned
+- `/gsd:new-milestone` for v0.2 (robustness: error handling, credential masking, error case tests)
 
 ---
 
