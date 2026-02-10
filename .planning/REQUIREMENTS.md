@@ -13,8 +13,8 @@
 
 ### Documentation
 
-- [ ] **DOCS-01**: README.md with install instructions and usage examples for each module
-- [ ] **DOCS-02**: CHANGELOG.md tracking changes per version
+- [x] **DOCS-01**: README.md with install instructions and usage examples for each module
+- [x] **DOCS-02**: CHANGELOG.md tracking changes per version
 
 ## v2 Requirements
 
@@ -41,8 +41,8 @@
 | CICD-01 | Phase 1 | Complete |
 | CICD-02 | Phase 1 | Complete |
 | CICD-03 | Phase 1 | Complete |
-| DOCS-01 | Phase 2 | Pending |
-| DOCS-02 | Phase 2 | Pending |
+| DOCS-01 | Phase 2 | Complete |
+| DOCS-02 | Phase 2 | Complete |
 
 **Coverage:**
 - v1 requirements: 5 total
@@ -52,4 +52,4 @@
 
 ---
 *Requirements defined: 2026-02-10*
-*Last updated: 2026-02-10 — Phase 1 complete (CICD-01, CICD-02, CICD-03)*
+*Last updated: 2026-02-10 — All v1 requirements complete (CICD-01, CICD-02, CICD-03, DOCS-01, DOCS-02)*
