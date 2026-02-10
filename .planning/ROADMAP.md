@@ -30,6 +30,12 @@ This roadmap delivers CI/CD automation and documentation for the ecotone-common 
 3. Developer checks repo tags → sees v0.1.0 with commit SHA and date
 4. Package maintainer can identify "what was in production at date X" via git tags
 
+**Plans:** 2 plans
+
+Plans:
+- [ ] 01-01-PLAN.md — Configure pytest/ruff in pyproject.toml and create GitHub Actions CI workflow
+- [ ] 01-02-PLAN.md — Create and push annotated v0.1.0 git tag
+
 ---
 
 ## Phase 2: Documentation
@@ -54,7 +60,7 @@ This roadmap delivers CI/CD automation and documentation for the ecotone-common 
 
 | Phase | Requirements | Status | Completion |
 |-------|--------------|--------|------------|
-| 1 - CI/CD Infrastructure | 3 | Not Started | 0% |
+| 1 - CI/CD Infrastructure | 3 | Planned (2 plans) | 0% |
 | 2 - Documentation | 2 | Not Started | 0% |
 
 **Overall:** 0/5 requirements complete (0%)
@@ -80,4 +86,4 @@ Phase 2: Documentation (CI validates examples)
 
 ---
 
-*Last updated: 2026-02-10*
+*Last updated: 2026-02-10 (Phase 1 planned)*
