@@ -56,6 +56,12 @@ Plans:
 3. Developer needs to generate reset token → finds working code example in README
 4. Developer asks "what changed between v0.1.0 and current?" → CHANGELOG.md answers the question
 
+**Plans:** 2 plans
+
+Plans:
+- [ ] 02-01-PLAN.md — Create README.md with install instructions and per-module API examples
+- [ ] 02-02-PLAN.md — Create CHANGELOG.md with v0.1.0 release entry
+
 ---
 
 ## Progress
@@ -88,4 +94,4 @@ Phase 2: Documentation (CI validates examples)
 
 ---
 
-*Last updated: 2026-02-10 (Phase 1 complete)*
+*Last updated: 2026-02-10 (Phase 2 planned)*
