@@ -38,12 +38,12 @@ class TokenService:
 
     def generate_verification_token(self, email: str) -> str:
         """Generate email verification token (1 hour expiry enforced on validation)."""
-        return self._serializer.dumps(email, salt='email-verify')
+        return self._serializer.dumps(email, salt="email-verify")
 
     def validate_verification_token(self, token: str, max_age: int = 3600) -> str | None:
         """Validate email verification token. Returns email or None."""
         try:
-            return self._serializer.loads(token, salt='email-verify', max_age=max_age)
+            return self._serializer.loads(token, salt="email-verify", max_age=max_age)
         except SignatureExpired:
             logger.warning("Verification token expired")
             return None
@@ -55,12 +55,12 @@ class TokenService:
 
     def generate_reset_token(self, email: str) -> str:
         """Generate password reset token (1 hour expiry enforced on validation)."""
-        return self._serializer.dumps(email, salt='password-reset')
+        return self._serializer.dumps(email, salt="password-reset")
 
     def validate_reset_token(self, token: str, max_age: int = 3600) -> str | None:
         """Validate password reset token. Returns email or None."""
         try:
-            return self._serializer.loads(token, salt='password-reset', max_age=max_age)
+            return self._serializer.loads(token, salt="password-reset", max_age=max_age)
         except SignatureExpired:
             logger.warning("Reset token expired")
             return None
@@ -73,14 +73,13 @@ class TokenService:
     def generate_approval_token(self, user_id, action: str) -> str:
         """Generate approval/rejection token for admin (24 hour expiry)."""
         return self._serializer.dumps(
-            {'user_id': str(user_id), 'action': action},
-            salt='approval-action'
+            {"user_id": str(user_id), "action": action}, salt="approval-action"
         )
 
     def validate_approval_token(self, token: str, max_age: int = 86400) -> dict | None:
         """Validate approval token. Returns dict with user_id and action, or None."""
         try:
-            return self._serializer.loads(token, salt='approval-action', max_age=max_age)
+            return self._serializer.loads(token, salt="approval-action", max_age=max_age)
         except SignatureExpired:
             logger.warning("Approval token expired")
             return None

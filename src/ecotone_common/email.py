@@ -22,8 +22,15 @@ class EmailBackend:
 class SmtpBackend(EmailBackend):
     """Send email via SMTP (e.g. Gmail)."""
 
-    def __init__(self, host: str, port: int, username: str, password: str,
-                 from_email: str = None, from_name: str = None):
+    def __init__(
+        self,
+        host: str,
+        port: int,
+        username: str,
+        password: str,
+        from_email: str = None,
+        from_name: str = None,
+    ):
         self.host = host
         self.port = port
         self.username = username
@@ -32,16 +39,12 @@ class SmtpBackend(EmailBackend):
         self.from_name = from_name
 
     def send(self, to: str, subject: str, html_body: str) -> bool:
-        msg = MIMEMultipart('alternative')
-        from_header = (
-            f'{self.from_name} <{self.from_email}>'
-            if self.from_name
-            else self.from_email
-        )
-        msg['From'] = from_header
-        msg['To'] = to
-        msg['Subject'] = subject
-        msg.attach(MIMEText(html_body, 'html'))
+        msg = MIMEMultipart("alternative")
+        from_header = f"{self.from_name} <{self.from_email}>" if self.from_name else self.from_email
+        msg["From"] = from_header
+        msg["To"] = to
+        msg["Subject"] = subject
+        msg.attach(MIMEText(html_body, "html"))
 
         with smtplib.SMTP(self.host, self.port) as server:
             server.starttls()
@@ -66,7 +69,9 @@ class SendGridBackend(EmailBackend):
 
         sg = sendgrid.SendGridAPIClient(api_key=self.api_key)
 
-        from_addr = Email(self.from_email, self.from_name) if self.from_name else Email(self.from_email)
+        from_addr = (
+            Email(self.from_email, self.from_name) if self.from_name else Email(self.from_email)
+        )
         message = Mail(
             from_email=from_addr,
             to_emails=To(to),
@@ -91,7 +96,9 @@ class LogBackend(EmailBackend):
             "\n========== EMAIL (DEV MODE) ==========\n"
             "To: %s\nSubject: %s\nBody:\n%s\n"
             "======================================",
-            to, subject, html_body,
+            to,
+            subject,
+            html_body,
         )
         return True
 
@@ -104,21 +111,21 @@ def create_email_backend(config: dict) -> EmailBackend:
         - SMTP_HOST → SmtpBackend
         - otherwise → LogBackend
     """
-    if config.get('SENDGRID_API_KEY'):
+    if config.get("SENDGRID_API_KEY"):
         return SendGridBackend(
-            api_key=config['SENDGRID_API_KEY'],
-            from_email=config.get('FROM_EMAIL', 'noreply@ecotone-partners.com'),
-            from_name=config.get('FROM_NAME'),
+            api_key=config["SENDGRID_API_KEY"],
+            from_email=config.get("FROM_EMAIL", "noreply@ecotone-partners.com"),
+            from_name=config.get("FROM_NAME"),
         )
 
-    if config.get('SMTP_HOST'):
+    if config.get("SMTP_HOST"):
         return SmtpBackend(
-            host=config['SMTP_HOST'],
-            port=int(config.get('SMTP_PORT', 587)),
-            username=config.get('SMTP_USERNAME', ''),
-            password=config.get('SMTP_PASSWORD', ''),
-            from_email=config.get('FROM_EMAIL'),
-            from_name=config.get('FROM_NAME'),
+            host=config["SMTP_HOST"],
+            port=int(config.get("SMTP_PORT", 587)),
+            username=config.get("SMTP_USERNAME", ""),
+            password=config.get("SMTP_PASSWORD", ""),
+            from_email=config.get("FROM_EMAIL"),
+            from_name=config.get("FROM_NAME"),
         )
 
     return LogBackend()

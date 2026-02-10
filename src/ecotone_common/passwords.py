@@ -5,18 +5,12 @@ import bcrypt
 
 def hash_password(password: str) -> str:
     """Hash a password using bcrypt. Returns UTF-8 string."""
-    return bcrypt.hashpw(
-        password.encode('utf-8'),
-        bcrypt.gensalt()
-    ).decode('utf-8')
+    return bcrypt.hashpw(password.encode("utf-8"), bcrypt.gensalt()).decode("utf-8")
 
 
 def check_password(password: str, hashed: str) -> bool:
     """Verify a password against a bcrypt hash."""
-    return bcrypt.checkpw(
-        password.encode('utf-8'),
-        hashed.encode('utf-8')
-    )
+    return bcrypt.checkpw(password.encode("utf-8"), hashed.encode("utf-8"))
 
 
 def validate_strength(
@@ -30,15 +24,15 @@ def validate_strength(
     failures = []
 
     if len(password) < min_length:
-        failures.append(f'Password must be at least {min_length} characters')
+        failures.append(f"Password must be at least {min_length} characters")
 
     if require_upper and not any(c.isupper() for c in password):
-        failures.append('Password must contain at least one uppercase letter')
+        failures.append("Password must contain at least one uppercase letter")
 
     if require_lower and not any(c.islower() for c in password):
-        failures.append('Password must contain at least one lowercase letter')
+        failures.append("Password must contain at least one lowercase letter")
 
     if require_digit and not any(c.isdigit() for c in password):
-        failures.append('Password must contain at least one digit')
+        failures.append("Password must contain at least one digit")
 
     return failures
