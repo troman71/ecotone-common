@@ -7,9 +7,9 @@
 
 ### CI/CD
 
-- [ ] **CICD-01**: GitHub Actions workflow runs pytest on push and PR
-- [ ] **CICD-02**: Linting enforced in CI (ruff or flake8)
-- [ ] **CICD-03**: v0.1.0 git tag created for release tracking
+- [x] **CICD-01**: GitHub Actions workflow runs pytest on push and PR
+- [x] **CICD-02**: Linting enforced in CI (ruff or flake8)
+- [x] **CICD-03**: v0.1.0 git tag created for release tracking
 
 ### Documentation
 
@@ -38,9 +38,9 @@
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| CICD-01 | Phase 1 | Pending |
-| CICD-02 | Phase 1 | Pending |
-| CICD-03 | Phase 1 | Pending |
+| CICD-01 | Phase 1 | Complete |
+| CICD-02 | Phase 1 | Complete |
+| CICD-03 | Phase 1 | Complete |
 | DOCS-01 | Phase 2 | Pending |
 | DOCS-02 | Phase 2 | Pending |
 
@@ -52,4 +52,4 @@
 
 ---
 *Requirements defined: 2026-02-10*
-*Last updated: 2026-02-10 after roadmap creation (100% coverage)*
+*Last updated: 2026-02-10 — Phase 1 complete (CICD-01, CICD-02, CICD-03)*
