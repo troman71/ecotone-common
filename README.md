@@ -6,7 +6,7 @@ Shared auth and utility primitives for Ecotone Python applications.
 
 Pure Python library (zero Flask dependency) providing four modules:
 
-- **passwords** -- bcrypt hashing and strength validation
+- **passwords** -- bcrypt hashing, legacy hash migration, and strength validation
 - **tokens** -- signed, time-limited tokens via itsdangerous
 - **email** -- pluggable backends (SMTP, SendGrid, log-only)
 - **consent** -- EULA/consent audit logging
@@ -49,14 +49,23 @@ assert check_password("MySecurePass1", hashed)
 `ecotone_common.passwords`
 
 ```python
-from ecotone_common import hash_password, check_password, validate_strength
+from ecotone_common import hash_password, check_password, needs_rehash, validate_strength
 
 # Hash a password (returns UTF-8 bcrypt string)
 hashed = hash_password("MySecurePass1")
 
-# Verify against stored hash
+# Verify against stored hash (supports bcrypt and legacy werkzeug hashes)
 if check_password("MySecurePass1", hashed):
     print("Password correct")
+
+# check_password auto-detects hash format:
+#   $2b$... → bcrypt (current)
+#   scrypt:... or pbkdf2:... → legacy werkzeug (auto-detected)
+
+# Check if a hash needs upgrading to bcrypt
+if needs_rehash(user['password_hash']):
+    new_hash = hash_password(password)
+    # UPDATE users SET password_hash = new_hash WHERE id = user_id
 
 # Validate strength (returns list of failure messages, empty = valid)
 failures = validate_strength("weak")
@@ -70,8 +79,9 @@ failures = validate_strength("abc", min_length=12, require_upper=False)
 
 **API:**
 
-- `hash_password(password: str) -> str`
-- `check_password(password: str, hashed: str) -> bool`
+- `hash_password(password: str) -> str` -- always produces bcrypt
+- `check_password(password: str, hashed: str) -> bool` -- bcrypt + legacy werkzeug (scrypt, pbkdf2)
+- `needs_rehash(hashed: str) -> bool` -- True if hash is not bcrypt (should upgrade)
 - `validate_strength(password: str, min_length=8, require_upper=True, require_lower=True, require_digit=True) -> list[str]`
 
 ## Tokens

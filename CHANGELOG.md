@@ -7,7 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
-_No unreleased changes._
+### Added
+
+- `passwords.needs_rehash(hashed)` -- returns True if hash should be upgraded to bcrypt
+
+### Changed
+
+- `passwords.check_password()` now supports legacy werkzeug hashes (scrypt, pbkdf2) in addition to bcrypt. Callers no longer need to detect hash format manually.
 
 ## [0.1.0] - 2026-02-10
 
