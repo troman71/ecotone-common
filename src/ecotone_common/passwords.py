@@ -1,6 +1,11 @@
-"""Password hashing and strength validation using bcrypt."""
+"""Password hashing and strength validation using bcrypt.
+
+Supports verifying legacy werkzeug (scrypt/pbkdf2) hashes for
+migration purposes. New hashes are always bcrypt.
+"""
 
 import bcrypt
+from werkzeug.security import check_password_hash
 
 
 def hash_password(password: str) -> str:
@@ -9,8 +14,18 @@ def hash_password(password: str) -> str:
 
 
 def check_password(password: str, hashed: str) -> bool:
-    """Verify a password against a bcrypt hash."""
-    return bcrypt.checkpw(password.encode("utf-8"), hashed.encode("utf-8"))
+    """Verify a password against a stored hash.
+
+    Supports bcrypt ($2b$) and legacy werkzeug hashes (scrypt, pbkdf2).
+    """
+    if hashed.startswith("$2b$"):
+        return bcrypt.checkpw(password.encode("utf-8"), hashed.encode("utf-8"))
+    return check_password_hash(hashed, password)
+
+
+def needs_rehash(hashed: str) -> bool:
+    """Check if a hash should be upgraded to bcrypt."""
+    return not hashed.startswith("$2b$")
 
 
 def validate_strength(
