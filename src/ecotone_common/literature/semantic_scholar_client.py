@@ -89,6 +89,31 @@ class SemanticScholarClient:
             headers["x-api-key"] = self.api_key
         return headers
 
+    @staticmethod
+    def translate_pubmed_query(query: str) -> str:
+        """
+        Translate a PubMed boolean string to Semantic Scholar /bulk syntax.
+
+        PubMed          → S2 Bulk
+        AND             → + (implicit; S2 default requires all terms)
+        OR              → |
+        NOT             → -
+        "phrase"        → "phrase"  (unchanged)
+        [Title/Abstract], [MeSH Terms], etc. → stripped (no field tags in S2)
+        (grouping)      → (grouping) (unchanged)
+        """
+        import re
+
+        # Strip PubMed field tags like [Title/Abstract], [MeSH Terms], [tw], etc.
+        q = re.sub(r"\[([^\]]+)\]", "", query)
+        # Convert boolean operators (whole-word, case-insensitive)
+        q = re.sub(r"\bAND\b", "+", q)
+        q = re.sub(r"\bOR\b", "|", q)
+        q = re.sub(r"\bNOT\b", "-", q)
+        # Collapse extra whitespace
+        q = re.sub(r"\s{2,}", " ", q).strip()
+        return q
+
     def search(
         self,
         query: str,
@@ -97,28 +122,44 @@ class SemanticScholarClient:
         fields_of_study: Optional[List[str]] = None,
         publication_types: Optional[List[str]] = None,
         open_access_only: bool = False,
+        boolean_mode: bool = False,
     ) -> List[Dict[str, Any]]:
         """
         Search Semantic Scholar for papers.
 
         Args:
-            query: Search query
-            max_results: Maximum results to return (max 100 per request)
+            query: Search query. If boolean_mode=True, PubMed syntax is
+                   automatically translated to S2 bulk syntax.
+            max_results: Maximum results to return (max 1000 for bulk)
             min_year: Minimum publication year
             fields_of_study: Filter by fields (e.g., ["Psychology", "Education"])
             publication_types: Filter by types (e.g., ["Review", "ClinicalTrial"])
             open_access_only: Only return open access papers
+            boolean_mode: If True, use /paper/search/bulk with boolean operators
+                          and translate PubMed syntax. If False, use plain-text
+                          /paper/search (AI relevance ranking, no boolean support).
 
         Returns:
             list: Paper metadata dicts
         """
         self._apply_rate_limit()
 
-        params = {
-            "query": query,
-            "limit": min(max_results, 100),
-            "fields": ",".join(self.PAPER_FIELDS),
-        }
+        if boolean_mode:
+            translated = self.translate_pubmed_query(query)
+            logger.info(f"S2 boolean query ({len(translated)} chars): {translated[:120]}")
+            endpoint = f"{self.BASE_URL}/paper/search/bulk"
+            params = {
+                "query": translated,
+                "limit": min(max_results, 1000),
+                "fields": ",".join(self.PAPER_FIELDS),
+            }
+        else:
+            endpoint = f"{self.BASE_URL}/paper/search"
+            params = {
+                "query": query,
+                "limit": min(max_results, 100),
+                "fields": ",".join(self.PAPER_FIELDS),
+            }
 
         if min_year:
             params["year"] = f"{min_year}-"
@@ -126,7 +167,8 @@ class SemanticScholarClient:
         if fields_of_study:
             params["fieldsOfStudy"] = ",".join(fields_of_study)
 
-        if publication_types:
+        if publication_types and not boolean_mode:
+            # publicationTypes filter only supported on /paper/search
             params["publicationTypes"] = ",".join(publication_types)
 
         if open_access_only:
@@ -155,9 +197,8 @@ class SemanticScholarClient:
                     )
                     time.sleep(wait_time)
 
-                # Use precision search endpoint (better relevance ranking than /bulk)
                 response = requests.get(
-                    f"{self.BASE_URL}/paper/search",
+                    endpoint,
                     params=params,
                     headers=self._get_headers(),
                     timeout=30,
