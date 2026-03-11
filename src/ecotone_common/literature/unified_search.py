@@ -58,7 +58,9 @@ class UnifiedLiteratureSearch:
         # API keys
         self.serpapi_key = serpapi_key or os.getenv("SERPAPI_API_KEY", "")
         self.ncbi_api_key = ncbi_api_key or os.getenv("NCBI_API_KEY", "")
-        self.semantic_scholar_key = semantic_scholar_key or os.getenv("SEMANTIC_SCHOLAR_API_KEY", "")
+        self.semantic_scholar_key = semantic_scholar_key or os.getenv(
+            "SEMANTIC_SCHOLAR_API_KEY", ""
+        )
 
         # Initialize clients
         if enable_pubmed:
@@ -141,7 +143,9 @@ class UnifiedLiteratureSearch:
             },
         }
 
-    def _search_parallel(self, query: str, max_results: int, min_year: Optional[int]) -> Dict[str, List[Dict]]:
+    def _search_parallel(
+        self, query: str, max_results: int, min_year: Optional[int]
+    ) -> Dict[str, List[Dict]]:
         """Run searches in parallel using threads."""
         results = {}
 
@@ -150,15 +154,19 @@ class UnifiedLiteratureSearch:
 
             # Submit search tasks
             if self.enable_google_scholar and self.serpapi_key:
-                futures[executor.submit(self._search_google_scholar, query, max_results, min_year)] = "google_scholar"
+                futures[
+                    executor.submit(self._search_google_scholar, query, max_results, min_year)
+                ] = "google_scholar"
 
             if self.enable_pubmed and self.pubmed_client:
-                futures[executor.submit(self._search_pubmed, query, max_results, min_year)] = "pubmed"
+                futures[executor.submit(self._search_pubmed, query, max_results, min_year)] = (
+                    "pubmed"
+                )
 
             if self.enable_semantic_scholar and self.semantic_scholar_client:
-                futures[executor.submit(self._search_semantic_scholar, query, max_results, min_year)] = (
-                    "semantic_scholar"
-                )
+                futures[
+                    executor.submit(self._search_semantic_scholar, query, max_results, min_year)
+                ] = "semantic_scholar"
 
             # Collect results
             for future in as_completed(futures):
@@ -172,7 +180,9 @@ class UnifiedLiteratureSearch:
 
         return results
 
-    def _search_sequential(self, query: str, max_results: int, min_year: Optional[int]) -> Dict[str, List[Dict]]:
+    def _search_sequential(
+        self, query: str, max_results: int, min_year: Optional[int]
+    ) -> Dict[str, List[Dict]]:
         """Run searches sequentially."""
         results = {}
 
@@ -183,11 +193,15 @@ class UnifiedLiteratureSearch:
             results["pubmed"] = self._search_pubmed(query, max_results, min_year)
 
         if self.enable_semantic_scholar and self.semantic_scholar_client:
-            results["semantic_scholar"] = self._search_semantic_scholar(query, max_results, min_year)
+            results["semantic_scholar"] = self._search_semantic_scholar(
+                query, max_results, min_year
+            )
 
         return results
 
-    def _search_google_scholar(self, query: str, max_results: int, min_year: Optional[int]) -> List[Dict[str, Any]]:
+    def _search_google_scholar(
+        self, query: str, max_results: int, min_year: Optional[int]
+    ) -> List[Dict[str, Any]]:
         """Search Google Scholar via SerpAPI."""
         try:
             params = {
@@ -262,7 +276,9 @@ class UnifiedLiteratureSearch:
             return int(years[0])
         return None
 
-    def _search_pubmed(self, query: str, max_results: int, min_year: Optional[int]) -> List[Dict[str, Any]]:
+    def _search_pubmed(
+        self, query: str, max_results: int, min_year: Optional[int]
+    ) -> List[Dict[str, Any]]:
         """Search PubMed via E-utilities."""
         try:
             papers = self.pubmed_client.search(
@@ -275,7 +291,9 @@ class UnifiedLiteratureSearch:
             logger.error(f"PubMed search failed: {e}")
             return []
 
-    def _search_semantic_scholar(self, query: str, max_results: int, min_year: Optional[int]) -> List[Dict[str, Any]]:
+    def _search_semantic_scholar(
+        self, query: str, max_results: int, min_year: Optional[int]
+    ) -> List[Dict[str, Any]]:
         """Search Semantic Scholar."""
         try:
             # Small delay to avoid hitting rate limits when running in parallel
@@ -351,23 +369,33 @@ class UnifiedLiteratureSearch:
             dict: Search results with evidence-focused papers
         """
         # Build evidence-focused queries for each source
-        gs_query = f'{topic} ("systematic review" OR "meta-analysis" OR "randomized controlled trial")'
+        gs_query = (
+            f'{topic} ("systematic review" OR "meta-analysis" OR "randomized controlled trial")'
+        )
         ss_query = topic
 
         results = {}
 
         # Google Scholar with evidence keywords
         if self.enable_google_scholar and self.serpapi_key:
-            results["google_scholar"] = self._search_google_scholar(gs_query, max_results_per_source, min_year)
+            results["google_scholar"] = self._search_google_scholar(
+                gs_query, max_results_per_source, min_year
+            )
 
         # PubMed with systematic review filter
         if self.enable_pubmed and self.pubmed_client:
-            results["pubmed"] = self.pubmed_client.search_systematic_reviews(topic, max_results_per_source)
-            results["pubmed"].extend(self.pubmed_client.search_clinical_trials(topic, max_results_per_source))
+            results["pubmed"] = self.pubmed_client.search_systematic_reviews(
+                topic, max_results_per_source
+            )
+            results["pubmed"].extend(
+                self.pubmed_client.search_clinical_trials(topic, max_results_per_source)
+            )
 
         # Semantic Scholar with review filter
         if self.enable_semantic_scholar and self.semantic_scholar_client:
-            results["semantic_scholar"] = self.semantic_scholar_client.search_reviews(ss_query, max_results_per_source)
+            results["semantic_scholar"] = self.semantic_scholar_client.search_reviews(
+                ss_query, max_results_per_source
+            )
 
         # Merge and deduplicate
         all_papers = []

@@ -150,7 +150,9 @@ class SemanticScholarClient:
             try:
                 if attempt > 0:
                     wait_time = 2 ** (attempt + 1)  # 4, 8 seconds
-                    logger.info(f"Semantic Scholar retry {attempt + 1}/{max_retries} after {wait_time}s")
+                    logger.info(
+                        f"Semantic Scholar retry {attempt + 1}/{max_retries} after {wait_time}s"
+                    )
                     time.sleep(wait_time)
 
                 # Use precision search endpoint (better relevance ranking than /bulk)
@@ -429,7 +431,7 @@ class SemanticScholarClient:
         stats = {
             "requests_made": self._requests_made,
             "has_api_key": bool(self.api_key),
-            "rate_limit": f"{1/self.rate_limit:.1f} req/sec",
+            "rate_limit": f"{1 / self.rate_limit:.1f} req/sec",
             "consecutive_rate_limits": self._consecutive_rate_limits,
             "temporarily_disabled": self._temporarily_disabled,
         }

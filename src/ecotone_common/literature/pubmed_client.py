@@ -46,7 +46,8 @@ class PubMedClient:
 
         if not self.api_key:
             logger.info(
-                "PubMed client initialized without API key (3 req/sec limit). " "Set NCBI_API_KEY for 10 req/sec."
+                "PubMed client initialized without API key (3 req/sec limit). "
+                "Set NCBI_API_KEY for 10 req/sec."
             )
 
     def _apply_rate_limit(self):
@@ -127,7 +128,9 @@ class PubMedClient:
             try:
                 if attempt > 0:
                     wait_time = 2 ** (attempt + 1)  # 4, 8 seconds
-                    logger.info(f"PubMed ESearch retry {attempt + 1}/{max_retries} after {wait_time}s")
+                    logger.info(
+                        f"PubMed ESearch retry {attempt + 1}/{max_retries} after {wait_time}s"
+                    )
                     time.sleep(wait_time)
                     self._apply_rate_limit()
 
@@ -188,7 +191,9 @@ class PubMedClient:
             try:
                 if attempt > 0:
                     wait_time = 2 ** (attempt + 1)  # 4, 8 seconds
-                    logger.info(f"PubMed EFetch retry {attempt + 1}/{max_retries} after {wait_time}s")
+                    logger.info(
+                        f"PubMed EFetch retry {attempt + 1}/{max_retries} after {wait_time}s"
+                    )
                     time.sleep(wait_time)
                     self._apply_rate_limit()
 
@@ -199,7 +204,9 @@ class PubMedClient:
                 )
 
                 if response.status_code == 429:
-                    logger.warning(f"PubMed rate limited on EFetch (attempt {attempt + 1}/{max_retries})")
+                    logger.warning(
+                        f"PubMed rate limited on EFetch (attempt {attempt + 1}/{max_retries})"
+                    )
                     if attempt < max_retries - 1:
                         continue
                     return []
@@ -331,7 +338,9 @@ class PubMedClient:
                 "doi": doi,
                 "pmc_id": pmc_id,
                 "link": f"https://pubmed.ncbi.nlm.nih.gov/{pmid}/",
-                "pdf_link": (f"https://www.ncbi.nlm.nih.gov/pmc/articles/{pmc_id}/pdf/" if pmc_id else ""),
+                "pdf_link": (
+                    f"https://www.ncbi.nlm.nih.gov/pmc/articles/{pmc_id}/pdf/" if pmc_id else ""
+                ),
                 "source": "pubmed",
             }
 
@@ -372,5 +381,5 @@ class PubMedClient:
         return {
             "requests_made": self._requests_made,
             "has_api_key": bool(self.api_key),
-            "rate_limit": f"{1/self.rate_limit:.1f} req/sec",
+            "rate_limit": f"{1 / self.rate_limit:.1f} req/sec",
         }
