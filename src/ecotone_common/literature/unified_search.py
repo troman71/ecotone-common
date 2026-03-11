@@ -9,7 +9,6 @@ Combines multiple academic search sources:
 Provides deduplication, source attribution, and merged results.
 """
 
-import hashlib
 import logging
 import os
 import time
@@ -353,7 +352,6 @@ class UnifiedLiteratureSearch:
         """
         # Build evidence-focused queries for each source
         gs_query = f'{topic} ("systematic review" OR "meta-analysis" OR "randomized controlled trial")'
-        pubmed_query = f"{topic}"  # PubMed client adds its own filters
         ss_query = topic
 
         results = {}
@@ -373,7 +371,7 @@ class UnifiedLiteratureSearch:
 
         # Merge and deduplicate
         all_papers = []
-        for source, papers in results.items():
+        for _source, papers in results.items():
             all_papers.extend(papers)
 
         deduplicated = self._deduplicate_papers(all_papers)

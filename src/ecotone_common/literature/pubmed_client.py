@@ -10,7 +10,6 @@ Documentation: https://www.ncbi.nlm.nih.gov/books/NBK25497/
 
 import logging
 import os
-import re
 import time
 import xml.etree.ElementTree as ET
 from typing import Any, Dict, List, Optional
