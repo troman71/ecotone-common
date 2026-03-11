@@ -123,23 +123,41 @@ class PubMedClient:
         if self.api_key:
             params["api_key"] = self.api_key
 
-        try:
-            response = requests.get(
-                f"{self.BASE_URL}/esearch.fcgi",
-                params=params,
-                timeout=30,
-            )
-            response.raise_for_status()
-            self._requests_made += 1
+        max_retries = 3
+        for attempt in range(max_retries):
+            try:
+                if attempt > 0:
+                    wait_time = 2 ** (attempt + 1)  # 4, 8 seconds
+                    logger.info(f"PubMed ESearch retry {attempt + 1}/{max_retries} after {wait_time}s")
+                    time.sleep(wait_time)
+                    self._apply_rate_limit()
 
-            data = response.json()
-            pmids = data.get("esearchresult", {}).get("idlist", [])
+                response = requests.get(
+                    f"{self.BASE_URL}/esearch.fcgi",
+                    params=params,
+                    timeout=30,
+                )
 
-            return pmids
+                if response.status_code == 429:
+                    logger.warning(f"PubMed rate limited (attempt {attempt + 1}/{max_retries})")
+                    if attempt < max_retries - 1:
+                        continue
+                    return []
 
-        except Exception as e:
-            logger.error(f"PubMed ESearch failed: {e}")
-            return []
+                response.raise_for_status()
+                self._requests_made += 1
+
+                data = response.json()
+                pmids = data.get("esearchresult", {}).get("idlist", [])
+                return pmids
+
+            except Exception as e:
+                logger.error(f"PubMed ESearch failed: {e}")
+                if attempt < max_retries - 1:
+                    continue
+                return []
+
+        return []
 
     def _efetch(self, pmids: List[str]) -> List[Dict[str, Any]]:
         """
@@ -166,22 +184,40 @@ class PubMedClient:
         if self.api_key:
             params["api_key"] = self.api_key
 
-        try:
-            response = requests.get(
-                f"{self.BASE_URL}/efetch.fcgi",
-                params=params,
-                timeout=60,
-            )
-            response.raise_for_status()
-            self._requests_made += 1
+        max_retries = 3
+        for attempt in range(max_retries):
+            try:
+                if attempt > 0:
+                    wait_time = 2 ** (attempt + 1)  # 4, 8 seconds
+                    logger.info(f"PubMed EFetch retry {attempt + 1}/{max_retries} after {wait_time}s")
+                    time.sleep(wait_time)
+                    self._apply_rate_limit()
 
-            # Parse XML response
-            papers = self._parse_pubmed_xml(response.text)
-            return papers
+                response = requests.get(
+                    f"{self.BASE_URL}/efetch.fcgi",
+                    params=params,
+                    timeout=60,
+                )
 
-        except Exception as e:
-            logger.error(f"PubMed EFetch failed: {e}")
-            return []
+                if response.status_code == 429:
+                    logger.warning(f"PubMed rate limited on EFetch (attempt {attempt + 1}/{max_retries})")
+                    if attempt < max_retries - 1:
+                        continue
+                    return []
+
+                response.raise_for_status()
+                self._requests_made += 1
+
+                papers = self._parse_pubmed_xml(response.text)
+                return papers
+
+            except Exception as e:
+                logger.error(f"PubMed EFetch failed: {e}")
+                if attempt < max_retries - 1:
+                    continue
+                return []
+
+        return []
 
     def _parse_pubmed_xml(self, xml_text: str) -> List[Dict[str, Any]]:
         """
