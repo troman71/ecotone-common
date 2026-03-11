@@ -1,6 +1,6 @@
 """Tests for ecotone_common.passwords."""
 
-from ecotone_common.passwords import hash_password, check_password, validate_strength
+from ecotone_common.passwords import check_password, hash_password, validate_strength
 
 
 def test_hash_and_check():

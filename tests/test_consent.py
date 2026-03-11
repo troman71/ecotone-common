@@ -1,7 +1,8 @@
 """Tests for ecotone_common.consent."""
 
 from unittest.mock import MagicMock
-from ecotone_common.consent import log_consent, get_current_eula_version
+
+from ecotone_common.consent import get_current_eula_version, log_consent
 
 
 def test_log_consent_executes_insert():

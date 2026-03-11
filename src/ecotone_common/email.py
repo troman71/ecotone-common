@@ -5,8 +5,8 @@ No Flask dependency. Caller provides configuration via constructor or factory.
 
 import logging
 import smtplib
-from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
 
 logger = logging.getLogger(__name__)
 
@@ -65,7 +65,7 @@ class SendGridBackend(EmailBackend):
 
     def send(self, to: str, subject: str, html_body: str) -> bool:
         import sendgrid
-        from sendgrid.helpers.mail import Mail, Email, To, Content
+        from sendgrid.helpers.mail import Content, Email, Mail, To
 
         sg = sendgrid.SendGridAPIClient(api_key=self.api_key)
 

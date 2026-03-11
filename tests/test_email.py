@@ -1,13 +1,9 @@
 """Tests for ecotone_common.email."""
 
 import logging
-from unittest.mock import patch, MagicMock
-from ecotone_common.email import (
-    SmtpBackend,
-    SendGridBackend,
-    LogBackend,
-    create_email_backend,
-)
+from unittest.mock import MagicMock, patch
+
+from ecotone_common.email import LogBackend, SendGridBackend, SmtpBackend, create_email_backend
 
 
 def test_log_backend(caplog):

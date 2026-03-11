@@ -6,7 +6,8 @@ No Flask dependency — caller provides the secret key.
 
 import logging
 import secrets
-from itsdangerous import URLSafeTimedSerializer, SignatureExpired, BadSignature
+
+from itsdangerous import BadSignature, SignatureExpired, URLSafeTimedSerializer
 
 logger = logging.getLogger(__name__)
 

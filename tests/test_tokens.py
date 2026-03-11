@@ -1,6 +1,7 @@
 """Tests for ecotone_common.tokens."""
 
 import time
+
 from ecotone_common.tokens import TokenService
 
 

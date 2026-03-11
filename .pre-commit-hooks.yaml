@@ -1,0 +1,23 @@
+# Ecotone standard pre-commit hooks
+# Projects reference these via:
+#   - repo: https://github.com/troman71/ecotone-common
+#     rev: main
+#     hooks:
+#       - id: ecotone-black
+#         args: [--line-length=120]
+#       - id: ecotone-isort
+#         args: [--profile=black, --line-length=120]
+
+- id: ecotone-black
+  name: Black (Ecotone standard formatter)
+  language: python
+  entry: black
+  types: [python]
+  additional_dependencies: ["black==24.4.2"]
+
+- id: ecotone-isort
+  name: isort (Ecotone standard import sorter)
+  language: python
+  entry: isort
+  types: [python]
+  additional_dependencies: ["isort==5.13.2"]

@@ -2,10 +2,10 @@
 
 __version__ = "0.1.0"
 
-from .passwords import hash_password, check_password, validate_strength
+from .consent import get_current_eula_version, log_consent
+from .email import LogBackend, SendGridBackend, SmtpBackend, create_email_backend
+from .passwords import check_password, hash_password, validate_strength
 from .tokens import TokenService
-from .email import SmtpBackend, SendGridBackend, LogBackend, create_email_backend
-from .consent import log_consent, get_current_eula_version
 
 __all__ = [
     "hash_password",
