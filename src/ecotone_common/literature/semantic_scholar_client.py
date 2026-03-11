@@ -153,9 +153,9 @@ class SemanticScholarClient:
                     logger.info(f"Semantic Scholar retry {attempt + 1}/{max_retries} after {wait_time}s")
                     time.sleep(wait_time)
 
-                # Use bulk search endpoint (less resource intensive, recommended)
+                # Use precision search endpoint (better relevance ranking than /bulk)
                 response = requests.get(
-                    f"{self.BASE_URL}/paper/search/bulk",
+                    f"{self.BASE_URL}/paper/search",
                     params=params,
                     headers=self._get_headers(),
                     timeout=30,
@@ -189,8 +189,9 @@ class SemanticScholarClient:
                 data = response.json()
                 papers = data.get("data", [])
 
-                # Normalize to common format
+                # Normalize and filter out non-paper records
                 normalized = [self._normalize_paper(p) for p in papers]
+                normalized = [p for p in normalized if self._is_valid_paper(p)]
 
                 logger.info(f"Semantic Scholar: Retrieved {len(normalized)} papers")
                 return normalized
@@ -207,6 +208,24 @@ class SemanticScholarClient:
                 return []
 
         return []
+
+    def _is_valid_paper(self, paper: Dict) -> bool:
+        """
+        Reject non-paper records that the API sometimes returns.
+
+        Filters out geographic data records, stub entries, and other
+        noise that appear as single-word or no-author titles.
+        """
+        title = (paper.get("title") or "").strip()
+        if not title:
+            return False
+        # Single-word titles (e.g. "Monaco", "Oman") are almost never real papers
+        if len(title.split()) < 2:
+            return False
+        # No authors AND no abstract is a strong signal of a stub/data record
+        if not paper.get("authors") and not paper.get("abstract"):
+            return False
+        return True
 
     def _normalize_paper(self, paper: Dict) -> Dict[str, Any]:
         """
